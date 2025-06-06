@@ -11,6 +11,8 @@ public class Main extends javax.swing.JFrame {
     
     public Main() {
         initComponents();
+        ProdutoDAO pdao = new ProdutoDAO();
+        ProdutoDAO.listaProduto = pdao.fetchListaDB();
     }
     
     @SuppressWarnings("unchecked")
@@ -369,7 +371,7 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_RegistroButtonActionPerformed
 
     private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
-        getProdutoDAO(ProdutoDAO.getLista());
+        getProdutoDAO();
         tableUpdate();
     }//GEN-LAST:event_formWindowGainedFocus
 
@@ -388,12 +390,13 @@ public class Main extends javax.swing.JFrame {
         //monta a tabela com dados do db
         return null;
     }
-    public void getProdutoDAO(ArrayList<Produto> al){
-        listaMainTable = al;
+    public void getProdutoDAO(){
+        listaMainTable = ProdutoDAO.getLista();
     }
     
-    public DefaultTableModel modelTest(){ //monta a tabela teste com a listaMainTable da classe main e retorna a tabela
+    public DefaultTableModel fetchDisplay(){ //monta a tabela teste com a listaMainTable da classe main e retorna a tabela
         String [] colunas = {"Quantidade","Produto","Descricao"};
+        getProdutoDAO();
         DefaultTableModel model = new DefaultTableModel(colunas,0);
         try{
             if (!listaMainTable.isEmpty()){
@@ -413,7 +416,7 @@ public class Main extends javax.swing.JFrame {
     public void tableUpdate(){ //refreshes the main table with a new list
         try{
            // if (!listaMainTable.isEmpty()) {    
-            jTable1.setModel(modelTest());
+            jTable1.setModel(fetchDisplay());
             //}else{jTable1.setModel(modelTest());}
         }catch (Exception e){System.out.println("lista nao contem dados");}
     }
@@ -444,6 +447,7 @@ public class Main extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
+                
                 new Main().setVisible(true);
             }
         });

@@ -10,7 +10,7 @@ import java.sql.SQLException;
 
 public class Conexao {
     static Connection conn = null;
-    public static String url = "jdbc:mysql://localhost:3306/cenaflix";
+    public static String url = "jdbc:mysql://localhost:3306/ces";
     public static String user = "root";
     public static String pass = "root";
     
