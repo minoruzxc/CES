@@ -31,7 +31,6 @@ public class ProdutoDAO {
                 p.setDescricao(rs.getString("descricao"));
                 listaProduto.add(p);
             }
-            conn.commit();
             conn.close();
          }catch (SQLException e){
              System.out.println("Ocorreu um erro no método fetchListaDB:"+e.getMessage());
@@ -50,7 +49,6 @@ public class ProdutoDAO {
     
     public void closeConn(){
         try{
-            conn.commit();
             conn.close();
         }catch(SQLException e){
             System.out.println("could not closeConn: "+e.getMessage());
@@ -69,16 +67,16 @@ public class ProdutoDAO {
     
     public void addBatch(String query){
         try{
-            if (conn.isClosed()){conn = Conexao.connect(); st = conn.createStatement();}
+            if (conn == null){conn = Conexao.connect(); st = conn.createStatement();}
             st.addBatch(query);
         }catch(SQLException e){
             System.out.println("Ocorreu um erro em addBatch(): "+e.getMessage());
         }
     }
     
-    public void closeBatch(String query){
+    public void closeBatch(){
         try{
-            if (conn.isClosed()){return;}
+            if (conn.isClosed() || conn == null){return;}
             st.executeBatch();
             conn.close();
             System.out.println("SQL batch sent successfully.");

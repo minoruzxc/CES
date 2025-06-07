@@ -8,7 +8,8 @@ import javax.swing.table.DefaultTableModel;
 public class AdicionarProduto extends javax.swing.JFrame {
 
         ArrayList<Produto> listateste = new ArrayList();
-
+        ProdutoDAO pdao = new ProdutoDAO();
+        
     public AdicionarProduto() {
         initComponents();
         jTable1.setModel(modelTest());
@@ -375,16 +376,27 @@ public class AdicionarProduto extends javax.swing.JFrame {
         if (option == 0) {
             ProdutoDAO.addLista(listateste);
             System.out.println("lista changed");
+            pdao.closeBatch();
             this.dispose();
         }
     }//GEN-LAST:event_ConfirmarButtonActionPerformed
 
     private void AdicionarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AdicionarButtonActionPerformed
-        Produto p = new Produto();
-        p.setNome(nomeTextField.getText());
-        p.setQuantidade(Integer.parseInt(quantidadeTextField.getText()));
-        p.setDescricao(descTextArea.getText());
-        listateste.add(p);
+         if (!quantidadeTextField.getText().matches("^[0-9]+$")){
+            JOptionPane.showMessageDialog(this, "Quantidade inválida! Utilizar apenas dígitos!");
+            return;
+        }
+         Produto p = new Produto();
+         p.setNome(nomeTextField.getText());
+         p.setQuantidade(Integer.parseInt(quantidadeTextField.getText()));
+         p.setDescricao(descTextArea.getText());
+         listateste.add(p);
+         String query = "insert into produto(nomeproduto, descricao, quantidade) values ('"
+                 +nomeTextField.getText()+ "','"
+                 +descTextArea.getText()+"',"
+                 +quantidadeTextField.getText()+")";
+         pdao.addBatch(query);
+         System.out.println(query);
         jTable1.setModel(modelTest());
         jTable1.getColumnModel().getColumn(0).setPreferredWidth(10);
         jTable1.getColumnModel().getColumn(1).setPreferredWidth(150);
