@@ -31,12 +31,72 @@ public class ProdutoDAO {
                 p.setDescricao(rs.getString("descricao"));
                 listaProduto.add(p);
             }
+            conn.commit();
+            conn.close();
          }catch (SQLException e){
              System.out.println("Ocorreu um erro no método fetchListaDB:"+e.getMessage());
          }
          return listaProduto;
     }
     
+    public void openConn(){
+        try {
+            conn = Conexao.connect();
+            st = conn.createStatement();
+        }catch(SQLException e){
+            System.out.println("could not openConn: "+e.getMessage());
+        }
+    }
+    
+    public void closeConn(){
+        try{
+            conn.commit();
+            conn.close();
+        }catch(SQLException e){
+            System.out.println("could not closeConn: "+e.getMessage());
+        }
+    }
+    
+    public void sqlUpdate(String query){
+          try{
+            openConn();
+            st.executeUpdate(query);
+            closeConn();
+          }catch(SQLException e){
+              System.out.println("Ocorreu um erro no método sqlUpdate: "+e.getMessage());
+          }
+    }
+    
+    public void addBatch(String query){
+        try{
+            if (conn.isClosed()){conn = Conexao.connect(); st = conn.createStatement();}
+            st.addBatch(query);
+        }catch(SQLException e){
+            System.out.println("Ocorreu um erro em addBatch(): "+e.getMessage());
+        }
+    }
+    
+    public void closeBatch(String query){
+        try{
+            if (conn.isClosed()){return;}
+            st.executeBatch();
+            conn.close();
+            System.out.println("SQL batch sent successfully.");
+        }catch(SQLException e){
+            System.out.println("Ocorreu um erro em closeBatch(): "+e.getMessage());
+        }
+    }
+    
+    public void cancelBatch(){
+        try{
+            if (conn.isClosed()){return;}
+            st.clearBatch();
+            conn.close();
+        }catch(SQLException e){
+            System.out.println("Ocorreu um erro em cancelBatch(): "+e.getMessage());
+        }
+    }
+        
     public static void setLista(ArrayList<Produto> al){
         listaProduto = al;
         System.out.println("lista em ProdutoDAO set");
