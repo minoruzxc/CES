@@ -33,7 +33,7 @@ public class UsuarioDAO {
                 listaUsuario.add(u);
             }
          }catch (SQLException e){
-             System.out.println("Ocorreu um erro no método fetchListaDB:"+e.getMessage());
+             System.out.println("Ocorreu um erro no método UsuarioDAO.fetchListaDB:"+e.getMessage());
          }
          return listaUsuario;
          

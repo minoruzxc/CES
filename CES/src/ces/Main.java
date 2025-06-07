@@ -7,10 +7,13 @@ import javax.swing.table.DefaultTableModel;
 
 public class Main extends javax.swing.JFrame {
     ArrayList<Produto> listaMainTable;
+    ArrayList<Usuario> listaUsuario;
     ProdutoDAO pdao = new ProdutoDAO();
+    UsuarioDAO udao = new UsuarioDAO();
     
     public Main() {
         initComponents();
+        loginAcessLevel(3,"Visitante");
     }
     
     @SuppressWarnings("unchecked")
@@ -25,8 +28,8 @@ public class Main extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         UsuarioTextField = new javax.swing.JTextField();
-        SenhaTextField = new javax.swing.JTextField();
         LoginButton = new javax.swing.JButton();
+        SenhaTextField = new javax.swing.JPasswordField();
         jPanel5 = new javax.swing.JPanel();
         AdicionarNovoButton = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
@@ -38,9 +41,9 @@ public class Main extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
+        userLabel = new javax.swing.JLabel();
         jSeparator3 = new javax.swing.JSeparator();
-        jLabel8 = new javax.swing.JLabel();
+        descLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -91,8 +94,6 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        SenhaTextField.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-
         LoginButton.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         LoginButton.setText("Login");
         LoginButton.addActionListener(new java.awt.event.ActionListener() {
@@ -121,10 +122,9 @@ public class Main extends javax.swing.JFrame {
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(LoginButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(SenhaTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(UsuarioTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 0, Short.MAX_VALUE)))))
+                                .addComponent(UsuarioTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(SenhaTextField))))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -138,13 +138,14 @@ public class Main extends javax.swing.JFrame {
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(SenhaTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(27, 27, 27)
                 .addComponent(LoginButton)
                 .addContainerGap(14, Short.MAX_VALUE))
         );
 
         AdicionarNovoButton.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         AdicionarNovoButton.setText("Adicionar novo");
+        AdicionarNovoButton.setEnabled(false);
         AdicionarNovoButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 AdicionarNovoButtonActionPerformed(evt);
@@ -156,6 +157,7 @@ public class Main extends javax.swing.JFrame {
 
         RemoverButton.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         RemoverButton.setText("Remover");
+        RemoverButton.setEnabled(false);
         RemoverButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 RemoverButtonActionPerformed(evt);
@@ -281,10 +283,10 @@ public class Main extends javax.swing.JFrame {
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel4.setText("Bem-vindo(a), ");
 
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel5.setText("visitante!");
+        userLabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        userLabel.setText("visitante!");
 
-        jLabel8.setText("Execute login para mais comandos.");
+        descLabel.setText("Execute login para mais comandos.");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -296,12 +298,11 @@ public class Main extends javax.swing.JFrame {
                         .addGap(31, 31, 31)
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel5)
-                        .addGap(21, 21, 21))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addComponent(userLabel))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(23, 23, 23)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel8)
+                            .addComponent(descLabel)
                             .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -311,11 +312,11 @@ public class Main extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(jLabel5))
+                    .addComponent(userLabel))
                 .addGap(4, 4, 4)
                 .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel8)
+                .addComponent(descLabel)
                 .addContainerGap(43, Short.MAX_VALUE))
         );
 
@@ -363,25 +364,73 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_RemoverButtonActionPerformed
 
     private void RegistroButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RegistroButtonActionPerformed
-        JOptionPane.showMessageDialog(this, "Não disponível nesta versão!");
+        AdicionarUsuario au = new AdicionarUsuario();
+        au.setVisible(true);
     }//GEN-LAST:event_RegistroButtonActionPerformed
 
     private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
         updateListaMain();
+        listaUsuario = udao.fetchListaDB();
         tableUpdate();
     }//GEN-LAST:event_formWindowGainedFocus
 
     private void LoginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginButtonActionPerformed
-        if ("admin".equals(UsuarioTextField.getText())) {
-            JOptionPane.showMessageDialog(this, "Conectado como administrador!");
-            RegistroButton.setEnabled(true);
-            RelatoriosButton.setEnabled(true);
+        if ("admin".equals(UsuarioTextField.getText()) && String.valueOf(SenhaTextField.getPassword()).isBlank()) {//login for testing purposes
+            JOptionPane.showMessageDialog(this, "Conectado como administrador! (Teste)");
+            loginAcessLevel(1,"Admin! (teste)");
+        }else if (!UsuarioTextField.getText().isEmpty()){
+            for (Usuario u : listaUsuario){
+                switch (u.getAcesso()){
+                    case "Admin":
+                        if (u.getPass().equals(String.valueOf(SenhaTextField.getPassword())) && u.getNome().equals(UsuarioTextField.getText())) {
+                            loginAcessLevel(1,u.getNome());
+                            JOptionPane.showMessageDialog(this, "Conectado como gerente!");
+                            break;
+                        }
+                        break;
+                    case "Usuário":
+                        if (u.getNome().equals(UsuarioTextField.getText()) && u.getPass().equals(String.valueOf(SenhaTextField.getPassword()))) {
+                            loginAcessLevel(2,u.getNome());
+                            JOptionPane.showMessageDialog(this, "Conectado como usuário!");
+                            break;
+                        }
+                        break;
+                    default:
+                }
+            }
+        }else{
+            JOptionPane.showMessageDialog(this, "Conectado como visitante!");
+            loginAcessLevel(3,"Visitante!");
         }
     }//GEN-LAST:event_LoginButtonActionPerformed
 
     private void RelatoriosButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RelatoriosButtonActionPerformed
         JOptionPane.showMessageDialog(this, "Não disponível nesta versão!");
     }//GEN-LAST:event_RelatoriosButtonActionPerformed
+    
+    public void loginAcessLevel(int i, String name){
+        switch(i){
+            case 1:
+                userLabel.setText(name);
+                RegistroButton.setEnabled(true);
+                RelatoriosButton.setEnabled(true);
+                RemoverButton.setEnabled(true);
+                AdicionarNovoButton.setEnabled(true);
+                descLabel.setText("Liberado acesso total.");
+                break;
+            case 2:
+                userLabel.setText(name);
+                RelatoriosButton.setEnabled(true);
+                RemoverButton.setEnabled(true);
+                AdicionarNovoButton.setEnabled(true);
+                descLabel.setText("Liberado acesso ao controle de produtos!");
+                break;
+            case 3:
+                userLabel.setText(name);
+                descLabel.setText("Execute login para mais comandos.");
+                break;
+        }
+    }
     
     public void updateListaMain(){
         listaMainTable = pdao.fetchListaDB();
@@ -451,15 +500,14 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JButton RegistroButton;
     private javax.swing.JButton RelatoriosButton;
     private javax.swing.JButton RemoverButton;
-    private javax.swing.JTextField SenhaTextField;
+    private javax.swing.JPasswordField SenhaTextField;
     private javax.swing.JTextField UsuarioTextField;
+    private javax.swing.JLabel descLabel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -470,5 +518,6 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JTable jTable1;
+    private javax.swing.JLabel userLabel;
     // End of variables declaration//GEN-END:variables
 }
