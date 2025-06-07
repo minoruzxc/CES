@@ -5,6 +5,7 @@ public class Produto {
     public String nome;
     public String descricao;
     public int quantidade;
+    public int sqlId;
     
 
     public Produto() {
@@ -14,8 +15,17 @@ public class Produto {
         this.descricao = p.getDescricao();
         this.nome = p.getNome();
         this.quantidade = p.getQuantidade();
+        this.sqlId = p.getSqlId();
     }
 
+    public int getSqlId() {
+        return sqlId;
+    }
+
+    public void setSqlId(int sqlId) {
+        this.sqlId = sqlId;
+    }
+    
     public int getQuantidade() {
         return quantidade;
     }

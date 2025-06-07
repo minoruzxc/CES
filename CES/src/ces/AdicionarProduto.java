@@ -403,6 +403,7 @@ public class AdicionarProduto extends javax.swing.JFrame {
     }//GEN-LAST:event_AdicionarButtonActionPerformed
 
     private void CancelarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelarButtonActionPerformed
+        if (pdao.conn != null){pdao.closeConn();}
         this.dispose();
     }//GEN-LAST:event_CancelarButtonActionPerformed
     

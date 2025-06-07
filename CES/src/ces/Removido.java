@@ -3,6 +3,7 @@ package ces;
 
 public class Removido {
     public int id;
+    public int sqlId;
     public int quantidade;
     public String nome;
     public String comentario;
@@ -16,6 +17,16 @@ public Removido (int id,int quantidade,String nome){
 public Removido(){
     
 }
+
+    public int getSqlId() {
+        return sqlId;
+    }
+
+    public void setSqlId(int sqlId) {
+        this.sqlId = sqlId;
+    }
+
+
 
     public String getComentario() {
         return comentario;

@@ -7,12 +7,10 @@ import javax.swing.table.DefaultTableModel;
 
 public class Main extends javax.swing.JFrame {
     ArrayList<Produto> listaMainTable;
-    
+    ProdutoDAO pdao = new ProdutoDAO();
     
     public Main() {
         initComponents();
-        ProdutoDAO pdao = new ProdutoDAO();
-        ProdutoDAO.listaProduto = pdao.fetchListaDB();
     }
     
     @SuppressWarnings("unchecked")
@@ -46,7 +44,6 @@ public class Main extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
-        setPreferredSize(new java.awt.Dimension(800, 632));
         setSize(new java.awt.Dimension(800, 632));
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {
@@ -60,7 +57,6 @@ public class Main extends javax.swing.JFrame {
         jPanel1.setPreferredSize(new java.awt.Dimension(600, 600));
 
         jScrollPane1.setViewportView(jTable1);
-        tableUpdate();
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -371,7 +367,7 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_RegistroButtonActionPerformed
 
     private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
-        getProdutoDAO();
+        updateListaMain();
         tableUpdate();
     }//GEN-LAST:event_formWindowGainedFocus
 
@@ -386,17 +382,13 @@ public class Main extends javax.swing.JFrame {
     private void RelatoriosButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RelatoriosButtonActionPerformed
         JOptionPane.showMessageDialog(this, "Não disponível nesta versão!");
     }//GEN-LAST:event_RelatoriosButtonActionPerformed
-    DefaultTableModel TableModel(){
-        //monta a tabela com dados do db
-        return null;
-    }
-    public void getProdutoDAO(){
-        listaMainTable = ProdutoDAO.getLista();
+    
+    public void updateListaMain(){
+        listaMainTable = pdao.fetchListaDB();
     }
     
     public DefaultTableModel fetchDisplay(){ //monta a tabela teste com a listaMainTable da classe main e retorna a tabela
         String [] colunas = {"Quantidade","Produto","Descricao"};
-        getProdutoDAO();
         DefaultTableModel model = new DefaultTableModel(colunas,0);
         try{
             if (!listaMainTable.isEmpty()){

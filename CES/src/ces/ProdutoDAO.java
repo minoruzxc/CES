@@ -24,11 +24,13 @@ public class ProdutoDAO {
             conn = Conexao.connect();
             st = conn.createStatement();
             rs = st.executeQuery(query);
+            listaProduto.clear();
             while(rs.next()){
                 Produto p = new Produto();
                 p.setNome(rs.getString("nomeproduto"));
                 p.setQuantidade(rs.getInt("quantidade"));
                 p.setDescricao(rs.getString("descricao"));
+                p.setSqlId(rs.getInt("id"));
                 listaProduto.add(p);
             }
             conn.close();

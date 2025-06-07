@@ -10,8 +10,10 @@ import javax.swing.table.DefaultTableModel;
 
 public class RemoverProduto extends javax.swing.JFrame {
 
+    ProdutoDAO pdao = new ProdutoDAO();
 ArrayList<Produto> listaMain = DeepCopy(ProdutoDAO.getLista());
 ArrayList<Removido> listaRemoved = new ArrayList<>();
+ArrayList<Integer> changedItemId = new ArrayList<>();
 
 ArrayList<Produto> DeepCopy (ArrayList<Produto> al){
     ArrayList<Produto> templist = new ArrayList<>();
@@ -353,13 +355,30 @@ ArrayList<Produto> DeepCopy (ArrayList<Produto> al){
     private void ConfirmarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConfirmarButtonActionPerformed
         int option = JOptionPane.showConfirmDialog(this, "Deseja remover os items selecionados?", "Alerta", 0);
         if (option == 0) {
-            for (int i = listaMain.size() - 1; i > -1; i--) {
+            /*for (int i = listaMain.size() - 1; i > -1; i--) { deprecrated from test build: removes items with qtd 0
                 if (listaMain.get(i).getQuantidade() <= 0){
                     listaMain.remove(i);
                 }
+            }*/
+            //ProdutoDAO.setLista(listaMain); // deprecated from test build
+            boolean clean = false;
+            String query = "delete from produto where id in (";
+            for (Produto p : listaMain) {
+                if (p.getQuantidade() == 0){ //removes items with quantity 0
+                    query = query + p.getSqlId() + ",";
+                    clean = true;
+                }
+            }query = query.substring(0, query.length() - 1) + ")";
+            if (clean){pdao.addBatch(query);System.out.println(query);}
+            for (Produto p : listaMain) {//for every item with altered qtd, update it
+                for (int i = 0; i < changedItemId.size(); i++) {
+                    if(p.getSqlId() == changedItemId.get(i) && p.getQuantidade() != 0){ 
+                        query = "update produto set quantidade = " + p.getQuantidade() + " where id = "+p.getSqlId();
+                        pdao.addBatch(query);System.out.println(query);
+                    };
+                }
             }
-            ProdutoDAO.setLista(listaMain);
-            //Inserir transferencia de relatorio
+            pdao.closeBatch();
             this.dispose();
         }
     }//GEN-LAST:event_ConfirmarButtonActionPerformed
@@ -393,16 +412,18 @@ ArrayList<Produto> DeepCopy (ArrayList<Produto> al){
                     matched = true;
                     break;
                 }
-            }if (matched) {
-            r.setNome(p.getNome());
-            int total = (r.getQuantidade() + spinner);
-            r.setQuantidade(total);
-            listaRemoved.set(index, r);
-        }else{//if lista is not matched:
-             r.setNome(p.getNome());
-             r.setQuantidade(spinner);
-             r.setId(jTable1.getSelectedRow());
-             listaRemoved.add(r);
+            }if (matched) {//if lista already has that entry:
+                r.setNome(p.getNome());
+                int total = (r.getQuantidade() + spinner);
+                r.setQuantidade(total);
+                r.setSqlId(p.getSqlId());
+                listaRemoved.set(index, r);
+            }else{//if lista has no entry:
+                r.setNome(p.getNome());
+                r.setQuantidade(spinner);
+                r.setId(jTable1.getSelectedRow());
+                changedItemId.add(listaMain.get(jTable1.getSelectedRow()).getSqlId());
+                listaRemoved.add(r);
             }
         //work stopped here
         setTables();
@@ -411,10 +432,6 @@ ArrayList<Produto> DeepCopy (ArrayList<Produto> al){
     private void CancelarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelarButtonActionPerformed
        this.dispose();
     }//GEN-LAST:event_CancelarButtonActionPerformed
-    DefaultTableModel TableModel(){
-        //monta a tabela com dados do db
-        return null;
-    }
     
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -447,6 +464,7 @@ ArrayList<Produto> DeepCopy (ArrayList<Produto> al){
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new RemoverProduto().setVisible(true);
+                
             }
         });
     }
