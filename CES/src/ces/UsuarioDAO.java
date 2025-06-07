@@ -14,7 +14,7 @@ public class UsuarioDAO {
     Statement st;
     ResultSet rs;
     
-     public ArrayList<Usuario> fetchListaDB(){ //unused for now
+     public ArrayList<Usuario> fetchListaDB(){ 
         String query = "select * from usuario";
          try{
             conn = Conexao.connect();
@@ -31,7 +31,7 @@ public class UsuarioDAO {
                         case 3: u.setAcesso("Visitante");break;
                     }
                 listaUsuario.add(u);
-            }
+            }conn.close();
          }catch (SQLException e){
              System.out.println("Ocorreu um erro no método UsuarioDAO.fetchListaDB:"+e.getMessage());
          }

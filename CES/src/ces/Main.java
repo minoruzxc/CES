@@ -370,7 +370,6 @@ public class Main extends javax.swing.JFrame {
 
     private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
         updateListaMain();
-        listaUsuario = udao.fetchListaDB();
         tableUpdate();
     }//GEN-LAST:event_formWindowGainedFocus
 
@@ -385,14 +384,14 @@ public class Main extends javax.swing.JFrame {
                         if (u.getPass().equals(String.valueOf(SenhaTextField.getPassword())) && u.getNome().equals(UsuarioTextField.getText())) {
                             loginAcessLevel(1,u.getNome());
                             JOptionPane.showMessageDialog(this, "Conectado como gerente!");
-                            break;
+                            return;
                         }
                         break;
                     case "Usuário":
                         if (u.getNome().equals(UsuarioTextField.getText()) && u.getPass().equals(String.valueOf(SenhaTextField.getPassword()))) {
                             loginAcessLevel(2,u.getNome());
                             JOptionPane.showMessageDialog(this, "Conectado como usuário!");
-                            break;
+                            return;
                         }
                         break;
                     default:
@@ -434,6 +433,7 @@ public class Main extends javax.swing.JFrame {
     
     public void updateListaMain(){
         listaMainTable = pdao.fetchListaDB();
+        listaUsuario = udao.fetchListaDB();
     }
     
     public DefaultTableModel fetchDisplay(){ //monta a tabela teste com a listaMainTable da classe main e retorna a tabela
