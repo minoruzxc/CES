@@ -6,9 +6,11 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class AdicionarProduto extends javax.swing.JFrame {
-
+    
         ArrayList<Produto> listateste = new ArrayList();
-
+        ProdutoDAO pdao = new ProdutoDAO();
+        ArrayList<String> logArray = new ArrayList();
+        
     public AdicionarProduto() {
         initComponents();
         jTable1.setModel(modelTest());
@@ -57,6 +59,7 @@ public class AdicionarProduto extends javax.swing.JFrame {
         jSeparator2 = new javax.swing.JSeparator();
         jScrollPane1 = new javax.swing.JScrollPane();
         descTextArea = new javax.swing.JTextArea();
+        jLabel6 = new javax.swing.JLabel();
         jPanel11 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable(modelTest());
@@ -252,6 +255,9 @@ public class AdicionarProduto extends javax.swing.JFrame {
         descTextArea.setText("Descrição teste");
         jScrollPane1.setViewportView(descTextArea);
 
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 2, 18)); // NOI18N
+        jLabel6.setText("Campos com * são obrigatórios!");
+
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
         jPanel10Layout.setHorizontalGroup(
@@ -284,11 +290,17 @@ public class AdicionarProduto extends javax.swing.JFrame {
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addGroup(jPanel10Layout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(jLabel6)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel10Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(12, 12, 12)
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(nomeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -363,8 +375,8 @@ public class AdicionarProduto extends javax.swing.JFrame {
                     .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
         pack();
@@ -375,22 +387,40 @@ public class AdicionarProduto extends javax.swing.JFrame {
         if (option == 0) {
             ProdutoDAO.addLista(listateste);
             System.out.println("lista changed");
+            pdao.closeBatch();
+            //log actions taken here to CSV file
+            RelatorioDAO rdao = new RelatorioDAO();
+            for (String str : logArray){
+                rdao.writeCsv(str);
+            }
             this.dispose();
         }
     }//GEN-LAST:event_ConfirmarButtonActionPerformed
-
+    
     private void AdicionarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AdicionarButtonActionPerformed
-        Produto p = new Produto();
-        p.setNome(nomeTextField.getText());
-        p.setQuantidade(Integer.parseInt(quantidadeTextField.getText()));
-        p.setDescricao(descTextArea.getText());
-        listateste.add(p);
+         if (!quantidadeTextField.getText().matches("^[0-9]+$")){
+            JOptionPane.showMessageDialog(this, "Quantidade inválida! Utilizar apenas dígitos!");
+            return;
+        }
+         Produto p = new Produto();
+         p.setNome(nomeTextField.getText());
+         p.setQuantidade(Integer.parseInt(quantidadeTextField.getText()));
+         p.setDescricao(descTextArea.getText());
+         listateste.add(p);
+         String query = "insert into produto(nomeproduto, descricao, quantidade) values ('"
+                 +nomeTextField.getText()+ "','"
+                 +descTextArea.getText()+"',"
+                 +quantidadeTextField.getText()+")";
+         pdao.addBatch(query);
+         logArray.add(query);
+         System.out.println(query);
         jTable1.setModel(modelTest());
         jTable1.getColumnModel().getColumn(0).setPreferredWidth(10);
         jTable1.getColumnModel().getColumn(1).setPreferredWidth(150);
     }//GEN-LAST:event_AdicionarButtonActionPerformed
 
     private void CancelarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelarButtonActionPerformed
+        if (pdao.conn != null){pdao.closeConn();}
         this.dispose();
     }//GEN-LAST:event_CancelarButtonActionPerformed
     
@@ -440,16 +470,15 @@ public class AdicionarProduto extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
-    private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;

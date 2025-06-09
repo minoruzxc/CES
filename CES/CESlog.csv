@@ -1,0 +1,1 @@
+insert into produto(nomeproduto, descricao, quantidade) values ('Teste','Descrição teste',250)
