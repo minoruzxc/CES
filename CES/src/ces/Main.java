@@ -404,7 +404,9 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_LoginButtonActionPerformed
 
     private void RelatoriosButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RelatoriosButtonActionPerformed
-        JOptionPane.showMessageDialog(this, "Não disponível nesta versão!");
+        //JOptionPane.showMessageDialog(this, "Não disponível nesta versão!");
+        RelatorioTela rt = new RelatorioTela();
+        rt.setVisible(true);
     }//GEN-LAST:event_RelatoriosButtonActionPerformed
     
     public void loginAcessLevel(int i, String name){

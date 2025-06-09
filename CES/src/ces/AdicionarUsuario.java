@@ -6,6 +6,7 @@ import javax.swing.JOptionPane;
 public class AdicionarUsuario extends javax.swing.JFrame {
 
         ProdutoDAO pdao = new ProdutoDAO();
+        RelatorioDAO rdao = new RelatorioDAO();
         
     public AdicionarUsuario() {
         initComponents();
@@ -253,11 +254,15 @@ public class AdicionarUsuario extends javax.swing.JFrame {
                     query = "insert into usuario (nome,acesso_id,senha) values ('"+nomeTextField.getText()+"',2,'"+senhaTextField.getText()+"')";
                     pdao.sqlUpdate(query);
                     JOptionPane.showMessageDialog(this, "Usuario adicionado com sucesso.");
+                    //log actions taken here to CSV file
+                    rdao.writeCsv(query);
                     this.dispose();
                 case 1:
                     query = "insert into usuario (nome,acesso_id,senha) values ('"+nomeTextField.getText()+"',1,'"+senhaTextField.getText()+"')";
                     pdao.sqlUpdate(query);
                     JOptionPane.showMessageDialog(this, "Conta gerente adicionada com sucesso.");
+                    //log actions taken here to CSV file
+                    rdao.writeCsv(query);
                     this.dispose();
             }       
         }

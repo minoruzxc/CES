@@ -6,9 +6,10 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class AdicionarProduto extends javax.swing.JFrame {
-
+    
         ArrayList<Produto> listateste = new ArrayList();
         ProdutoDAO pdao = new ProdutoDAO();
+        ArrayList<String> logArray = new ArrayList();
         
     public AdicionarProduto() {
         initComponents();
@@ -387,10 +388,15 @@ public class AdicionarProduto extends javax.swing.JFrame {
             ProdutoDAO.addLista(listateste);
             System.out.println("lista changed");
             pdao.closeBatch();
+            //log actions taken here to CSV file
+            RelatorioDAO rdao = new RelatorioDAO();
+            for (String str : logArray){
+                rdao.writeCsv(str);
+            }
             this.dispose();
         }
     }//GEN-LAST:event_ConfirmarButtonActionPerformed
-
+    
     private void AdicionarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AdicionarButtonActionPerformed
          if (!quantidadeTextField.getText().matches("^[0-9]+$")){
             JOptionPane.showMessageDialog(this, "Quantidade inválida! Utilizar apenas dígitos!");
@@ -406,6 +412,7 @@ public class AdicionarProduto extends javax.swing.JFrame {
                  +descTextArea.getText()+"',"
                  +quantidadeTextField.getText()+")";
          pdao.addBatch(query);
+         logArray.add(query);
          System.out.println(query);
         jTable1.setModel(modelTest());
         jTable1.getColumnModel().getColumn(0).setPreferredWidth(10);

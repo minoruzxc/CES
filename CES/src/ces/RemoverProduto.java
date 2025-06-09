@@ -14,6 +14,7 @@ public class RemoverProduto extends javax.swing.JFrame {
 ArrayList<Produto> listaMain = DeepCopy(ProdutoDAO.getLista());
 ArrayList<Removido> listaRemoved = new ArrayList<>();
 ArrayList<Integer> changedItemId = new ArrayList<>();
+ArrayList<String> logArray = new ArrayList();
 
 ArrayList<Produto> DeepCopy (ArrayList<Produto> al){
     ArrayList<Produto> templist = new ArrayList<>();
@@ -369,16 +370,21 @@ ArrayList<Produto> DeepCopy (ArrayList<Produto> al){
                     clean = true;
                 }
             }query = query.substring(0, query.length() - 1) + ")";
-            if (clean){pdao.addBatch(query);System.out.println(query);}
+            if (clean){pdao.addBatch(query);System.out.println(query);logArray.add(query);}
             for (Produto p : listaMain) {//for every item with altered qtd, update it
                 for (int i = 0; i < changedItemId.size(); i++) {
                     if(p.getSqlId() == changedItemId.get(i) && p.getQuantidade() != 0){ 
                         query = "update produto set quantidade = " + p.getQuantidade() + " where id = "+p.getSqlId();
-                        pdao.addBatch(query);System.out.println(query);
-                    };
+                        pdao.addBatch(query);System.out.println(query);logArray.add(query);
+                    }
                 }
             }
             pdao.closeBatch();
+            //log actions taken here to CSV file
+            RelatorioDAO rdao = new RelatorioDAO();
+            for (String str : logArray){
+                rdao.writeCsv(str);
+            }
             this.dispose();
         }
     }//GEN-LAST:event_ConfirmarButtonActionPerformed
@@ -425,7 +431,7 @@ ArrayList<Produto> DeepCopy (ArrayList<Produto> al){
                 changedItemId.add(listaMain.get(jTable1.getSelectedRow()).getSqlId());
                 listaRemoved.add(r);
             }
-        //work stopped here
+        
         setTables();
     }//GEN-LAST:event_RemoverButtonActionPerformed
 
